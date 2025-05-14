@@ -24,7 +24,7 @@ export function PieChart({
               cx="50%"
               cy="50%"
               labelLine={false}
-              outerRadius={80}
+              outerRadius={60}
               fill="#8884d8"
               dataKey="value"
               label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
@@ -34,7 +34,7 @@ export function PieChart({
               ))}
             </Pie>
             <Tooltip formatter={(value) => [`${value}`, "Count"]} />
-            <Legend />
+            <Legend layout="horizontal" verticalAlign="bottom" align="center" />
           </RechartsChart>
         </ResponsiveContainer>
       </div>

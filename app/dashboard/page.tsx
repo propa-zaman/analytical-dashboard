@@ -62,13 +62,13 @@ export default function DashboardPage() {
           <Stats filteredCustomers={filteredCustomers} />
 
           <div className="grid gap-6 mt-6 md:grid-cols-2 lg:grid-cols-3">
-            <div className="bg-card border rounded-lg p-4 h-[300px]">
+            <div className="bg-card border rounded-lg p-4 h-[350px]">
               <PieChart data={getDivisionData()} title="Customers by Division" />
             </div>
-            <div className="bg-card border rounded-lg p-4 h-[300px]">
+            <div className="bg-card border rounded-lg p-4 h-[350px]">
               <PieChart data={getGenderData()} title="Gender Distribution" colors={["#3b82f6", "#ec4899"]} />
             </div>
-            <div className="bg-card border rounded-lg p-4 h-[300px]">
+            <div className="bg-card border rounded-lg p-4 h-[350px]">
               <PieChart
                 data={getMaritalStatusData()}
                 title="Marital Status Distribution"
