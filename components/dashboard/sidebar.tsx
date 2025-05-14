@@ -10,7 +10,18 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
-import { BarChart3, ChevronDown, Home, LayoutDashboard, LogOut, Menu, PieChart, Settings, Users } from "lucide-react"
+import {
+  BarChart3,
+  ChevronDown,
+  Database,
+  Home,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  PieChart,
+  Settings,
+  Users,
+} from "lucide-react"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isCollapsed?: boolean
@@ -46,6 +57,12 @@ export function Sidebar({ className, isCollapsed, onToggle }: SidebarProps) {
       title: "Reports",
       href: "/dashboard/reports",
       icon: PieChart,
+      variant: "ghost",
+    },
+    {
+      title: "Database Schema",
+      href: "/dashboard/erd",
+      icon: Database,
       variant: "ghost",
     },
     {
