@@ -28,6 +28,14 @@ interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   onToggle?: () => void
 }
 
+interface SidebarItem {
+  title: string
+  href: string
+  icon: React.ElementType
+  variant: string
+  disabled?: boolean
+}
+
 export function Sidebar({ className, isCollapsed, onToggle }: SidebarProps) {
   const { user, logout } = useAuth()
   const pathname = usePathname()
@@ -155,7 +163,7 @@ function MobileSidebar({
   pathname,
   setOpen,
 }: {
-  items: any[]
+  items: SidebarItem[]
   pathname: string
   setOpen: (open: boolean) => void
 }) {

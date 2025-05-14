@@ -170,7 +170,7 @@ export function PredictiveAnalytics({ customers }: PredictiveAnalyticsProps) {
                     </>
                   ) : (
                     <div className="text-center text-muted-foreground">
-                      Enter customer details and click "Predict Income" to see the prediction.
+                      Enter customer details and click Predict Income to see the prediction.
                     </div>
                   )}
                 </div>

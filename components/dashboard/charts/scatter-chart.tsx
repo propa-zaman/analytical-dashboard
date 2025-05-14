@@ -12,7 +12,7 @@ import {
 } from "recharts"
 
 interface ScatterChartProps {
-  data: Array<{ x: number; y: number; [key: string]: any }>
+  data: Array<{ x: number; y: number; [key: string]: string | number | boolean }>
   xLabel: string
   yLabel: string
   title?: string

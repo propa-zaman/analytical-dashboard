@@ -57,7 +57,7 @@ export function RecommendationsReport({ customers, reportDate }: Recommendations
             <div className="p-4 border rounded-lg">
               <h3 className="text-lg font-medium mb-4">Executive Summary</h3>
               <p className="text-muted-foreground">
-                Based on comprehensive analysis of customer data, we've identified several strategic opportunities to
+                Based on comprehensive analysis of customer data, we have identified several strategic opportunities to
                 drive growth, optimize customer acquisition, and improve retention. The following recommendations are
                 prioritized by potential impact and implementation feasibility.
               </p>

@@ -10,8 +10,16 @@ interface FilterBarProps {
   onFilterChange: (filters: Partial<Customer>) => void
 }
 
+// Define a type for filter values that can be strings
+type FilterValue = string
+
+// Define a type for our filters object
+type Filters = {
+  [K in keyof Customer]?: FilterValue
+}
+
 export function FilterBar({ onFilterChange }: FilterBarProps) {
-  const [filters, setFilters] = useState<Partial<Customer>>({})
+  const [filters, setFilters] = useState<Filters>({})
 
   const divisions = getUniqueValues("division")
   const genders = getUniqueValues("gender")
@@ -21,13 +29,14 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
     const newFilters = { ...filters }
 
     if (value) {
+      // Set the value with the correct type
       newFilters[key] = value
     } else {
       delete newFilters[key]
     }
 
     setFilters(newFilters)
-    onFilterChange(newFilters)
+    onFilterChange(newFilters as unknown as Partial<Customer>)
   }
 
   const clearFilters = () => {
@@ -41,7 +50,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
           <div>
             <Select
-              value={(filters.division as string) || ""}
+              value={filters.division || ""}
               onValueChange={(value) => handleFilterChange("division", value || null)}
             >
               <SelectTrigger>
@@ -59,10 +68,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
           </div>
 
           <div>
-            <Select
-              value={(filters.gender as string) || ""}
-              onValueChange={(value) => handleFilterChange("gender", value || null)}
-            >
+            <Select value={filters.gender || ""} onValueChange={(value) => handleFilterChange("gender", value || null)}>
               <SelectTrigger>
                 <SelectValue placeholder="Gender" />
               </SelectTrigger>
@@ -79,7 +85,7 @@ export function FilterBar({ onFilterChange }: FilterBarProps) {
 
           <div>
             <Select
-              value={(filters.maritalStatus as string) || ""}
+              value={filters.maritalStatus || ""}
               onValueChange={(value) => handleFilterChange("maritalStatus", value || null)}
             >
               <SelectTrigger>

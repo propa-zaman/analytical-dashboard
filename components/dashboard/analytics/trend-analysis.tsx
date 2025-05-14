@@ -20,20 +20,21 @@ export function TrendAnalysis({ customers }: TrendAnalysisProps) {
     { min: 50, max: 54 },
   ]
 
-  const incomeByAge = ageGroups.map((group) => {
-    const groupCustomers = customers.filter((c) => c.age >= group.min && c.age <= group.max && c.income > 0)
-    const avgIncome =
-      groupCustomers.length > 0
-        ? Math.round(groupCustomers.reduce((sum, c) => sum + c.income, 0) / groupCustomers.length)
-        : 0
-    return { name: `${group.min}-${group.max}`, value: avgIncome }
-  })
+  // Remove this entire block or comment it out
+  // const incomeByAge = ageGroups.map((group) => {
+  //   const groupCustomers = customers.filter((c) => c.age >= group.min && c.age <= group.max && c.income > 0)
+  //   const avgIncome =
+  //     groupCustomers.length > 0
+  //       ? Math.round(groupCustomers.reduce((sum, c) => sum + c.income, 0) / groupCustomers.length)
+  //       : 0
+  //   return { name: `${group.min}-${group.max}`, value: avgIncome }
+  // })
 
   // Calculate income trend by age for different marital statuses
   const maritalStatuses = [...new Set(customers.map((c) => c.maritalStatus))]
 
   const incomeByAgeAndStatus = ageGroups.map((group) => {
-    const result: any = { name: `${group.min}-${group.max}` }
+    const result: Record<string, string | number> = { name: `${group.min}-${group.max}` }
 
     maritalStatuses.forEach((status) => {
       const statusCustomers = customers.filter(

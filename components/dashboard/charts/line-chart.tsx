@@ -12,7 +12,7 @@ import {
 } from "recharts"
 
 interface LineChartProps {
-  data: any[]
+  data: Record<string, string | number>[]
   categories: string[]
   index: string
   title?: string

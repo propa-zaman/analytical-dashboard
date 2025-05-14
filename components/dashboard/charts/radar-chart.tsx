@@ -12,7 +12,7 @@ import {
 } from "recharts"
 
 interface RadarChartProps {
-  data: any[]
+  data: Record<string, string | number>[]
   categories: string[]
   index: string
   title?: string
@@ -40,7 +40,7 @@ export function RadarChart({
             {data.map((entry, index) => (
               <Radar
                 key={entry[index]}
-                name={entry[index]}
+                name={String(entry[index])}
                 dataKey="value"
                 stroke={colors[index % colors.length]}
                 fill={colors[index % colors.length]}
@@ -50,7 +50,7 @@ export function RadarChart({
             {categories.map((category, i) => (
               <Radar
                 key={i}
-                name={data[i][index]}
+                name={String(data[i][index])}
                 dataKey={category}
                 stroke={colors[i % colors.length]}
                 fill={colors[i % colors.length]}

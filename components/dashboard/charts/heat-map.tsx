@@ -30,6 +30,12 @@ export function HeatMap({ data, xLabel, yLabel, valueFormatter = (value: number)
 
   return (
     <div className="w-full h-full">
+      <div className="flex justify-between mb-4">
+        <h3 className="text-sm font-medium">
+          {xLabel} vs {yLabel}
+        </h3>
+      </div>
+
       <div className="flex mb-2">
         <div className="w-24"></div>
         <div className="flex-1 flex">

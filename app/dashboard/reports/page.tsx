@@ -28,6 +28,13 @@ export default function ReportsPage() {
     }
   }, [user, isLoading, router])
 
+  useEffect(() => {
+    // Set report date to the first day of the current month for consistency
+    const firstDayOfMonth = new Date()
+    firstDayOfMonth.setDate(1)
+    setReportDate(firstDayOfMonth.toISOString().split("T")[0])
+  }, [])
+
   if (isLoading || !user) {
     return (
       <div className="flex h-screen items-center justify-center">
