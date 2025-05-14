@@ -35,7 +35,7 @@ export function SettingsExportPreferences() {
           <Tabs defaultValue="formats" className="space-y-4">
             <TabsList>
               <TabsTrigger value="formats">Export Formats</TabsTrigger>
-              <TabsTrigger value="styling">Styling & Branding</TabsTrigger>
+              {/* <TabsTrigger value="styling">Styling & Branding</TabsTrigger> */}
               <TabsTrigger value="scheduling">Scheduled Exports</TabsTrigger>
             </TabsList>
 
