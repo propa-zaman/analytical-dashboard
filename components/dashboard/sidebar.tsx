@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation"
 import { useAuth } from "@/context/auth-context"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import {
   BarChart3,
@@ -92,6 +92,7 @@ export function Sidebar({ className, isCollapsed, onToggle }: SidebarProps) {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="pr-0 sm:max-w-xs">
+          <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
           <MobileSidebar items={items} pathname={pathname} setOpen={setOpen} />
         </SheetContent>
       </Sheet>
