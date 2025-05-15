@@ -14,6 +14,9 @@ import { Button } from "@/components/ui/button"
 import type { Customer } from "@/lib/data"
 import { useAuth } from "@/context/auth-context"
 import { MoreHorizontal, Edit, Trash, Eye } from "lucide-react"
+import { CustomerViewDialog } from "./customer-view-dialog"
+import { CustomerEditDialog } from "./customer-edit-dialog"
+import { CustomerDeleteDialog } from "./customer-delete-dialog"
 
 interface CustomerTableProps {
   customers: Customer[]
@@ -24,6 +27,12 @@ export function CustomerTable({ customers }: CustomerTableProps) {
   const [page, setPage] = useState(1)
   const pageSize = 10
 
+  // State for dialogs
+  const [viewDialogOpen, setViewDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
+
   const canEdit = user?.role === "admin" || user?.role === "sales"
   const canDelete = user?.role === "admin"
 
@@ -31,6 +40,24 @@ export function CustomerTable({ customers }: CustomerTableProps) {
   const endIndex = startIndex + pageSize
   const paginatedCustomers = customers.slice(startIndex, endIndex)
   const totalPages = Math.ceil(customers.length / pageSize)
+
+  // Handle view customer
+  const handleViewCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer)
+    setViewDialogOpen(true)
+  }
+
+  // Handle edit customer
+  const handleEditCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer)
+    setEditDialogOpen(true)
+  }
+
+  // Handle delete customer
+  const handleDeleteCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer)
+    setDeleteDialogOpen(true)
+  }
 
   return (
     <div className="space-y-4">
@@ -76,15 +103,19 @@ export function CustomerTable({ customers }: CustomerTableProps) {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => handleViewCustomer(customer)}>
                           <Eye className="mr-2 h-4 w-4" />
                           View details
                         </DropdownMenuItem>
-                        <DropdownMenuItem disabled={!canEdit}>
+                        <DropdownMenuItem disabled={!canEdit} onClick={() => canEdit && handleEditCustomer(customer)}>
                           <Edit className="mr-2 h-4 w-4" />
                           Edit customer
                         </DropdownMenuItem>
-                        <DropdownMenuItem disabled={!canDelete}>
+                        <DropdownMenuItem
+                          disabled={!canDelete}
+                          onClick={() => canDelete && handleDeleteCustomer(customer)}
+                          className="text-red-600 focus:text-red-600"
+                        >
                           <Trash className="mr-2 h-4 w-4" />
                           Delete customer
                         </DropdownMenuItem>
@@ -111,6 +142,28 @@ export function CustomerTable({ customers }: CustomerTableProps) {
           </Button>
         </div>
       )}
+
+      {/* Customer View Dialog */}
+      <CustomerViewDialog
+        customerId={selectedCustomer?.id || null}
+        open={viewDialogOpen}
+        onOpenChange={setViewDialogOpen}
+      />
+
+      {/* Customer Edit Dialog */}
+      <CustomerEditDialog
+        customerId={selectedCustomer?.id || null}
+        open={editDialogOpen}
+        onOpenChange={setEditDialogOpen}
+      />
+
+      {/* Customer Delete Dialog */}
+      <CustomerDeleteDialog
+        customerId={selectedCustomer?.id || null}
+        customerName={selectedCustomer?.name || null}
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+      />
     </div>
   )
 }
