@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
-import { Check, Loader2, Moon, Sun } from "lucide-react"
+import { Check, Loader2, Moon, Sun } from 'lucide-react'
 import { Separator } from "@/components/ui/separator"
 import { useTheme } from "next-themes"
 import { useToast } from "@/hooks/use-toast"
@@ -51,6 +51,8 @@ export function SettingsAppearance() {
         variant: "default",
       })
     } catch (error) {
+      // Using error parameter without underscore to avoid linting error
+      console.error("Failed to save appearance settings:", error)
       toast({
         title: "Error",
         description: "There was an error saving your appearance settings.",
@@ -73,6 +75,8 @@ export function SettingsAppearance() {
         variant: "default",
       })
     } catch (error) {
+      // Using error parameter without underscore to avoid linting error
+      console.error("Failed to save layout settings:", error)
       toast({
         title: "Error",
         description: "There was an error saving your layout settings.",

@@ -36,12 +36,10 @@ export function CustomerDeleteDialog({ customerId, customerName, open, onOpenCha
       if (result.success) {
         toast({
           title: "Success",
-          description: result.message,
         })
       } else {
         toast({
           title: "Error",
-          description: result.message,
           variant: "destructive",
         })
       }

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import { customers } from "./data"
+import type { Customer } from "./data"
 
 // Customer actions
 export async function getCustomer(id: string) {
@@ -21,7 +22,7 @@ export async function getCustomer(id: string) {
   }
 }
 
-export async function updateCustomer(data: any) {
+export async function updateCustomer(data: Partial<Customer> & { id: string }) {
   try {
     // Simulate database update
     await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -53,10 +54,7 @@ export async function deleteCustomer(id: string) {
     }
 
     // In a real app, you would delete from the database
-    // Here we're just simulating by filtering the array
-    const updatedCustomers = customers.filter((c) => c.id !== id)
-
-    // Update our in-memory array (this is just for simulation)
+    // Here we're just simulating by removing from the array
     customers.splice(index, 1)
 
     revalidatePath("/dashboard/customers")

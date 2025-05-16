@@ -53,6 +53,8 @@ export function SettingsProfile({ user }: SettingsProfileProps) {
         variant: "default",
       })
     } catch (error) {
+      // Using error parameter without underscore to avoid linting error
+      console.error("Failed to update profile:", error)
       toast({
         title: "Error",
         description: "There was an error updating your profile.",
@@ -97,6 +99,8 @@ export function SettingsProfile({ user }: SettingsProfileProps) {
       setNewPassword("")
       setConfirmPassword("")
     } catch (error) {
+      // Using error parameter without underscore to avoid linting error
+      console.error("Failed to update password:", error)
       toast({
         title: "Error",
         description: "There was an error updating your password.",

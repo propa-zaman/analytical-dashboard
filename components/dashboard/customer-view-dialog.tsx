@@ -34,11 +34,17 @@ export function CustomerViewDialog({ customerId, open, onOpenChange }: CustomerV
       setError(null)
 
       try {
-        const data = await getCustomer(customerId)
-        if (data) {
-          setCustomer(data)
+        const result = await getCustomer(customerId)
+        
+        if (result.success && result.data) {
+          setCustomer(result.data)
         } else {
-          setError("Customer not found")
+          setError(result.error || "Customer not found")
+          toast({
+            title: "Error",
+            description: result.error || "Failed to load customer details",
+            variant: "destructive",
+          })
         }
       } catch (err) {
         setError("Failed to load customer details")

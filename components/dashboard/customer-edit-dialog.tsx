@@ -85,18 +85,17 @@ export function CustomerEditDialog({ customerId, open, onOpenChange }: CustomerE
     setSubmitting(true)
 
     try {
-      const result = await updateCustomer(customerId, data)
+      // Include the ID in the data object for updating
+      const result = await updateCustomer({ ...data, id: customerId })
 
       if (result.success) {
         toast({
           title: "Success",
-          description: result.message,
         })
         onOpenChange(false)
       } else {
         toast({
           title: "Error",
-          description: result.message,
           variant: "destructive",
         })
       }
