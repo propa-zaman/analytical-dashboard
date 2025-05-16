@@ -1,84 +1,113 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
-import { getCustomers } from "./data"
-import type { Customer } from "./data"
+import { customers } from "./data"
 
-// Get a single customer by ID
-export async function getCustomer(id: string): Promise<Customer | null> {
+// Customer actions
+export async function getCustomer(id: string) {
   try {
     // Simulate database lookup
-    const customers = getCustomers()
+    await new Promise((resolve) => setTimeout(resolve, 500))
     const customer = customers.find((c) => c.id === id)
 
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    if (!customer) {
+      throw new Error("Customer not found")
+    }
 
-    return customer || null
+    return { success: true, data: customer }
   } catch (error) {
     console.error("Error fetching customer:", error)
-    throw new Error("Failed to fetch customer")
+    return { success: false, error: "Failed to fetch customer" }
   }
 }
 
-// Update a customer
-export async function updateCustomer(
-  id: string,
-  data: Partial<Customer>,
-): Promise<{ success: boolean; message: string }> {
+export async function updateCustomer(data: any) {
   try {
     // Simulate database update
-    const customers = getCustomers()
-    const customerIndex = customers.findIndex((c) => c.id === id)
-
-    if (customerIndex === -1) {
-      return { success: false, message: "Customer not found" }
-    }
-
-    // Update customer data (in a real app, this would be a database update)
-    customers[customerIndex] = {
-      ...customers[customerIndex],
-      ...data,
-      // Ensure id doesn't change
-      id: customers[customerIndex].id,
-    }
-
-    // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Revalidate the customers page to reflect changes
-    revalidatePath("/dashboard/customers")
+    const index = customers.findIndex((c) => c.id === data.id)
+    if (index === -1) {
+      throw new Error("Customer not found")
+    }
 
-    return { success: true, message: "Customer updated successfully" }
+    // Update customer data
+    customers[index] = { ...customers[index], ...data }
+
+    revalidatePath("/dashboard/customers")
+    return { success: true, data: customers[index] }
   } catch (error) {
     console.error("Error updating customer:", error)
-    return { success: false, message: "Failed to update customer" }
+    return { success: false, error: "Failed to update customer" }
   }
 }
 
-// Delete a customer
-export async function deleteCustomer(id: string): Promise<{ success: boolean; message: string }> {
+export async function deleteCustomer(id: string) {
   try {
     // Simulate database delete
-    const customers = getCustomers()
-    const customerIndex = customers.findIndex((c) => c.id === id)
-
-    if (customerIndex === -1) {
-      return { success: false, message: "Customer not found" }
-    }
-
-    // Remove customer (in a real app, this would be a database delete)
-    customers.splice(customerIndex, 1)
-
-    // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Revalidate the customers page to reflect changes
-    revalidatePath("/dashboard/customers")
+    const index = customers.findIndex((c) => c.id === id)
+    if (index === -1) {
+      throw new Error("Customer not found")
+    }
 
-    return { success: true, message: "Customer deleted successfully" }
+    // In a real app, you would delete from the database
+    // Here we're just simulating by filtering the array
+    const updatedCustomers = customers.filter((c) => c.id !== id)
+
+    // Update our in-memory array (this is just for simulation)
+    customers.splice(index, 1)
+
+    revalidatePath("/dashboard/customers")
+    return { success: true }
   } catch (error) {
     console.error("Error deleting customer:", error)
-    return { success: false, message: "Failed to delete customer" }
+    return { success: false, error: "Failed to delete customer" }
+  }
+}
+
+// User profile actions
+export async function updateUserProfile(data: {
+  id: string
+  name: string
+  email: string
+  phone?: string
+  jobTitle?: string
+  department?: string
+}) {
+  try {
+    // Simulate database update
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // In a real app, you would update the user in the database
+    console.log("Updating user profile:", data)
+
+    revalidatePath("/dashboard/settings")
+    return { success: true }
+  } catch (error) {
+    console.error("Error updating user profile:", error)
+    return { success: false, error: "Failed to update user profile" }
+  }
+}
+
+// Appearance settings actions
+export async function saveAppearanceSettings(data: {
+  colorScheme: string
+  fontSize: string
+  reducedMotion: boolean
+  highContrast: boolean
+}) {
+  try {
+    // Simulate database update
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // In a real app, you would save these settings to the user's profile
+    console.log("Saving appearance settings:", data)
+
+    return { success: true }
+  } catch (error) {
+    console.error("Error saving appearance settings:", error)
+    return { success: false, error: "Failed to save appearance settings" }
   }
 }

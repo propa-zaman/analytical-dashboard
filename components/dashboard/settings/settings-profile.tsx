@@ -9,7 +9,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { UserRole } from "@/context/auth-context"
 import { Separator } from "@/components/ui/separator"
-import { Camera, Loader2 } from "lucide-react"
+import { Camera, Loader2, Check } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { updateUserProfile } from "@/lib/actions"
 
 interface SettingsProfileProps {
   user: {
@@ -21,20 +23,88 @@ interface SettingsProfileProps {
 }
 
 export function SettingsProfile({ user }: SettingsProfileProps) {
+  const { toast } = useToast()
   const [name, setName] = useState(user.name)
   const [email, setEmail] = useState(user.email)
   const [phone, setPhone] = useState("")
   const [jobTitle, setJobTitle] = useState("")
   const [department, setDepartment] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false)
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setIsLoading(true)
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await updateUserProfile({
+        id: user.id,
+        name,
+        email,
+        phone,
+        jobTitle,
+        department,
+      })
+
+      toast({
+        title: "Profile updated",
+        description: "Your profile has been updated successfully.",
+        variant: "default",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error updating your profile.",
+        variant: "destructive",
+      })
+    } finally {
       setIsLoading(false)
-      alert("Profile updated successfully")
-    }, 1000)
+    }
+  }
+
+  const handlePasswordUpdate = async () => {
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Passwords don't match",
+        description: "New password and confirmation password must match.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (newPassword.length < 8) {
+      toast({
+        title: "Password too short",
+        description: "Password must be at least 8 characters long.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsPasswordLoading(true)
+    try {
+      // Simulate password update
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      toast({
+        title: "Password updated",
+        description: "Your password has been updated successfully.",
+        variant: "default",
+      })
+
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error updating your password.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsPasswordLoading(false)
+    }
   }
 
   return (
@@ -118,7 +188,7 @@ export function SettingsProfile({ user }: SettingsProfileProps) {
         </CardContent>
         <CardFooter className="flex justify-end">
           <Button onClick={handleSave} disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
             Save Changes
           </Button>
         </CardFooter>
@@ -132,24 +202,56 @@ export function SettingsProfile({ user }: SettingsProfileProps) {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="current-password">Current Password</Label>
-            <Input id="current-password" type="password" placeholder="Enter current password" />
+            <Input
+              id="current-password"
+              type="password"
+              placeholder="Enter current password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="new-password">New Password</Label>
-              <Input id="new-password" type="password" placeholder="Enter new password" />
+              <Input
+                id="new-password"
+                type="password"
+                placeholder="Enter new password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirm-password">Confirm New Password</Label>
-              <Input id="confirm-password" type="password" placeholder="Confirm new password" />
+              <Input
+                id="confirm-password"
+                type="password"
+                placeholder="Confirm new password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
             </div>
           </div>
         </CardContent>
         <CardFooter className="flex justify-end">
-          <Button variant="outline" className="mr-2">
+          <Button
+            variant="outline"
+            className="mr-2"
+            onClick={() => {
+              setCurrentPassword("")
+              setNewPassword("")
+              setConfirmPassword("")
+            }}
+          >
             Cancel
           </Button>
-          <Button>Update Password</Button>
+          <Button
+            onClick={handlePasswordUpdate}
+            disabled={isPasswordLoading || !currentPassword || !newPassword || !confirmPassword}
+          >
+            {isPasswordLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Update Password
+          </Button>
         </CardFooter>
       </Card>
     </div>

@@ -1,30 +1,91 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
-import { Loader2, Moon, Sun } from "lucide-react"
+import { Check, Loader2, Moon, Sun } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
+import { useTheme } from "next-themes"
+import { useToast } from "@/hooks/use-toast"
+import { saveAppearanceSettings } from "@/lib/actions"
 
 export function SettingsAppearance() {
-  const [theme, setTheme] = useState("system")
+  const { theme, setTheme } = useTheme()
+  const { toast } = useToast()
+  const [mounted, setMounted] = useState(false)
   const [colorScheme, setColorScheme] = useState("blue")
   const [fontSize, setFontSize] = useState("medium")
   const [reducedMotion, setReducedMotion] = useState(false)
   const [highContrast, setHighContrast] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [layoutLoading, setLayoutLoading] = useState(false)
 
-  const handleSave = () => {
+  // useEffect only runs on the client, so we can safely use browser APIs
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const handleSave = async () => {
     setIsLoading(true)
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await saveAppearanceSettings({
+        colorScheme,
+        fontSize,
+        reducedMotion,
+        highContrast,
+      })
+
+      // Apply some of the settings immediately
+      document.documentElement.style.fontSize = fontSize === "small" ? "14px" : fontSize === "large" ? "18px" : "16px"
+
+      document.documentElement.classList.toggle("reduce-motion", reducedMotion)
+      document.documentElement.classList.toggle("high-contrast", highContrast)
+
+      toast({
+        title: "Appearance settings saved",
+        description: "Your appearance preferences have been updated.",
+        variant: "default",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error saving your appearance settings.",
+        variant: "destructive",
+      })
+    } finally {
       setIsLoading(false)
-      alert("Appearance settings saved successfully")
-    }, 1000)
+    }
+  }
+
+  const handleLayoutSave = async () => {
+    setLayoutLoading(true)
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      toast({
+        title: "Layout settings saved",
+        description: "Your layout preferences have been updated.",
+        variant: "default",
+      })
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "There was an error saving your layout settings.",
+        variant: "destructive",
+      })
+    } finally {
+      setLayoutLoading(false)
+    }
+  }
+
+  // Avoid rendering with undefined theme
+  if (!mounted) {
+    return null
   }
 
   return (
@@ -120,7 +181,7 @@ export function SettingsAppearance() {
         </CardContent>
         <CardFooter className="flex justify-end">
           <Button onClick={handleSave} disabled={isLoading}>
-            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}
             Save Preferences
           </Button>
         </CardFooter>
@@ -168,7 +229,10 @@ export function SettingsAppearance() {
           <Button variant="outline" className="mr-2">
             Reset to Defaults
           </Button>
-          <Button>Save Layout</Button>
+          <Button onClick={handleLayoutSave} disabled={layoutLoading}>
+            {layoutLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Save Layout
+          </Button>
         </CardFooter>
       </Card>
     </div>
