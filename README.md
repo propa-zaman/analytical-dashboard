@@ -85,7 +85,7 @@ This project demonstrates modern web development practices using Next.js, React,
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/analytics-dashboard.git
+git clone https://github.com/propa-zaman/analytics-dashboard.git
 cd analytics-dashboard
 ```
 2. Install dependencies:
