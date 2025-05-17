@@ -199,4 +199,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Your Name - propazaman12@gmailcom
 
-Project Link: [https://github.com/propa-zaman/analytics-dashboard](https://github.com/propa-zaman/analytics-dashboard)
+Project Link: [https://github.com/propa-zaman/analytical-dashboard](https://github.com/propa-zaman/analytical-dashboard)
