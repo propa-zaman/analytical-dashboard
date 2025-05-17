@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
-import { Check, Loader2, Moon, Sun } from 'lucide-react'
+import { Check, Loader2, Moon, Sun } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { useTheme } from "next-themes"
 import { useToast } from "@/hooks/use-toast"
@@ -24,14 +24,57 @@ export function SettingsAppearance() {
   const [isLoading, setIsLoading] = useState(false)
   const [layoutLoading, setLayoutLoading] = useState(false)
 
-  // useEffect only runs on the client, so we can safely use browser APIs
+  // Load saved preferences and set mounted state
   useEffect(() => {
     setMounted(true)
+
+    // Load saved preferences from localStorage
+    const savedColorScheme = localStorage.getItem("colorScheme") || "blue"
+    const savedFontSize = localStorage.getItem("fontSize") || "medium"
+    const savedReducedMotion = localStorage.getItem("reducedMotion") === "true"
+    const savedHighContrast = localStorage.getItem("highContrast") === "true"
+
+    setColorScheme(savedColorScheme)
+    setFontSize(savedFontSize)
+    setReducedMotion(savedReducedMotion)
+    setHighContrast(savedHighContrast)
   }, [])
+
+  // Apply font size effect
+  useEffect(() => {
+    if (mounted) {
+      document.documentElement.style.fontSize = fontSize === "small" ? "14px" : fontSize === "large" ? "18px" : "16px"
+    }
+  }, [fontSize, mounted])
+
+  // Apply color scheme effect
+  useEffect(() => {
+    if (mounted) {
+      // Apply color scheme by adding a class to the html element
+      const root = document.documentElement
+      root.classList.remove("theme-blue", "theme-green", "theme-purple", "theme-orange", "theme-red")
+      root.classList.add(`theme-${colorScheme}`)
+    }
+  }, [colorScheme, mounted])
+
+  // Apply reduced motion effect
+  useEffect(() => {
+    if (mounted) {
+      document.documentElement.classList.toggle("reduce-motion", reducedMotion)
+    }
+  }, [reducedMotion, mounted])
+
+  // Apply high contrast effect
+  useEffect(() => {
+    if (mounted) {
+      document.documentElement.classList.toggle("high-contrast", highContrast)
+    }
+  }, [highContrast, mounted])
 
   const handleSave = async () => {
     setIsLoading(true)
     try {
+      // Save to server via server action
       await saveAppearanceSettings({
         colorScheme,
         fontSize,
@@ -39,20 +82,18 @@ export function SettingsAppearance() {
         highContrast,
       })
 
-      // Apply some of the settings immediately
-      document.documentElement.style.fontSize = fontSize === "small" ? "14px" : fontSize === "large" ? "18px" : "16px"
-
-      document.documentElement.classList.toggle("reduce-motion", reducedMotion)
-      document.documentElement.classList.toggle("high-contrast", highContrast)
+      // Save to localStorage for persistence
+      localStorage.setItem("colorScheme", colorScheme)
+      localStorage.setItem("fontSize", fontSize)
+      localStorage.setItem("reducedMotion", reducedMotion.toString())
+      localStorage.setItem("highContrast", highContrast.toString())
 
       toast({
         title: "Appearance settings saved",
         description: "Your appearance preferences have been updated.",
         variant: "default",
       })
-    } catch (error) {
-      // Using error parameter without underscore to avoid linting error
-      console.error("Failed to save appearance settings:", error)
+    } catch {
       toast({
         title: "Error",
         description: "There was an error saving your appearance settings.",
@@ -74,9 +115,7 @@ export function SettingsAppearance() {
         description: "Your layout preferences have been updated.",
         variant: "default",
       })
-    } catch (error) {
-      // Using error parameter without underscore to avoid linting error
-      console.error("Failed to save layout settings:", error)
+    } catch {
       toast({
         title: "Error",
         description: "There was an error saving your layout settings.",
@@ -87,7 +126,7 @@ export function SettingsAppearance() {
     }
   }
 
-  // Avoid rendering with undefined theme
+  // Render content only when mounted
   if (!mounted) {
     return null
   }

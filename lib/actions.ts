@@ -100,8 +100,17 @@ export async function saveAppearanceSettings(data: {
     // Simulate database update
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // In a real app, you would save these settings to the user's profile
+    // In a real app, you would save these settings to the user's profile in a database
     console.log("Saving appearance settings:", data)
+
+    // You could add validation here
+    if (!["blue", "green", "purple", "orange", "red"].includes(data.colorScheme)) {
+      throw new Error("Invalid color scheme")
+    }
+
+    if (!["small", "medium", "large"].includes(data.fontSize)) {
+      throw new Error("Invalid font size")
+    }
 
     return { success: true }
   } catch (error) {
